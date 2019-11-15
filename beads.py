@@ -175,7 +175,9 @@ def main():
     for j in range(len(xorig)//N):
         if j < (len(xorig)//N)-1:
             y.append( sum(xorig[N*j:N*(j+1)]) /N )
-    
+        else:
+            j=(len(xorig)//N)-1
+            y.append( sum(xorig[N*j:]) / len(xorig[N*j:]) )
     sig = y
            
     # set parameters
