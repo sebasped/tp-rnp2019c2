@@ -34,7 +34,7 @@ from scipy.sparse import spdiags
 
 def beads(y, d, fc, r, lam0, lam1, lam2, pen='L1_v2', Nit=3):
     # The following parameter may be altered.
-    Nit = 3  # Nit: Number of iterations
+    Nit = 30  # Nit: Number of iterations
     pen = 'L1_v2'  # pen : penalty function for sparse derivative ('L1_v1' or 'L1_v2')
     EPS0 = 1e-6  # cost smoothing parameter for x (small positive value)
     EPS1 = 1e-6  # cost smoothing parameter for derivatives (small positive value)
@@ -171,7 +171,7 @@ def main():
 
     # promedio para que no sea tan pesado.
     y=[]
-    N = 25  #Queda a 10 Hz porque promedio 25 datos.
+    N = 50  #Queda a 10 Hz porque promedio 25 datos.
     for j in range(len(xorig)//N):
         if j < (len(xorig)//N)-1:
             y.append( sum(xorig[N*j:N*(j+1)]) /N )
@@ -184,10 +184,13 @@ def main():
     fc = 0.006
     d = 1
     r = 6
-    amp = 0.8
-    lam0 = 0.5 * amp
-    lam1 = 5 * amp
-    lam2 = 4 * amp
+#    amp = 0.8
+    amp = 5
+    lam0 = 50.0 * amp
+    lam1 = lam0
+    lam2 = 40.0 * amp
+#    lam1 = 5 * amp
+#    lam2 = 4 * amp
 #    Nit = 1
 #    pen = 'L1_v2'
 
