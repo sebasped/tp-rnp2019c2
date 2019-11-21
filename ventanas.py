@@ -7,6 +7,7 @@ Created on Tue Nov 19 20:43:37 2019
 """
 
 from matplotlib import pyplot as plt
+import numpy as np
 
 path = './'
 #filename = '0.1BzATP12.txt'
@@ -14,6 +15,22 @@ filename = 'BEADSSignal.txt'
 with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
        xorig = [int(float(line)) for line in lines]
+
+
+
+x=[]
+path = './'
+##filename = '0.1BzATP12.txt'
+filename = 'sinPico.txt'
+with open(path+filename, 'r') as f:
+       lines = (line.strip() for line in f if line)
+#       xtest = [int(float(line)) for line in lines]
+#       line=f.readline()
+       for line in lines:
+           floats = [float(x) for x in line.split()]
+           x.append(floats)
+
+
 
 # promedio para que no sea tan pesado.
 sig=[]
@@ -29,6 +46,7 @@ for j in range(len(xorig)//N):
 plt.clf()
 #plt.plot(xorig)
 plt.plot(sig)
+#plt.plot(xtest[0])
 #plt.show()
 
 
@@ -39,10 +57,12 @@ with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
        redLines = [int(float(line)) for line in lines]
 
+
 redLinesConv = [i*250/N for i in redLines]
-redLinesConv.append(15600)
-redLinesConv[1]=10000
+#redLinesConv.append(15600)
+#redLinesConv[1]=10000
 redLinesConv.append(len(sig)-1)
+
 
 for i in range(len(redLinesConv)):
     plt.axvline(redLinesConv[i], color='r')
@@ -77,7 +97,13 @@ for i in range(len(redLinesConv)):
             conPico.append( sig[j*sizeWin+offset:(j+1)*sizeWin+offset] )
             j += 1
         sin=True
+
+
+
 #sinPico.append( sig[j*sizeWin:(j+1)*sizeWin] )
 
 
 #plt.plot(conPico[0])
+
+#array = np.array(conPico)
+#np.savetxt('test.txt', conPico)
