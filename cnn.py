@@ -115,6 +115,7 @@ if __name__ == '__main__':
             sin=True
 
     
+    
 #    raw = conPico[0]
     data = torch.tensor(conPico).view(11,1,1250) #o reshape
     print('Data size:', data.shape)
