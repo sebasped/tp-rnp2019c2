@@ -54,19 +54,36 @@ if __name__ == '__main__':
            floats = [float(x) for x in line.split()]
            sinPico.append(floats)
     
+    conPico=[]
+    path = './'
+    filename = 'conPico.txt'
+    with open(path+filename, 'r') as f:
+       lines = (line.strip() for line in f if line)
+    #       xtest = [int(float(line)) for line in lines]
+       for line in lines:
+           floats = [float(x) for x in line.split()]
+           conPico.append(floats)
     
-    sinPico_trn = sinPico[0:10]
-    sinPico_tst = sinPico[10:20]
+    n=50
+    sinPico_trn = sinPico[0:n]
+    sinPico_tst = sinPico[n:2*n]
 
-    data_trn = torch.tensor(sinPico_trn).view(10,1,1500)
-    labels_trn = torch.tensor([0]*10)#.view(11,1)
-    data_tst = torch.tensor(sinPico_tst).view(10,1,1500)
-    labels_tst = torch.tensor([0]*10)#.view(11,1)
+    conPico_trn = conPico[0:n]
+    conPico_tst = conPico[n:2*n]
+
+    series_trn = sinPico_trn + conPico_trn
+    series_tst = sinPico_tst + conPico_tst
+    
+    data_trn = torch.tensor(series_trn).view(2*n,1,1500)
+    labels_trn = torch.tensor([0]*n+[1]*n)#.view(11,1)
+    
+    data_tst = torch.tensor(series_tst).view(2*n,1,1500)
+    labels_tst = torch.tensor([0]*n+[1]*n)#.view(11,1)
     
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=2
+    B=5
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
