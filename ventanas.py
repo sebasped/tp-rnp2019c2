@@ -7,14 +7,14 @@ Created on Tue Nov 19 20:43:37 2019
 """
 
 from matplotlib import pyplot as plt
-import numpy as np
+#import numpy as np
 
 path = './'
 #filename = '0.1BzATP12.txt'
 filename = 'BEADSSignal.txt'
 with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
-       xorig = [int(float(line)) for line in lines]
+       xorig = [float(line) for line in lines]
 
 
 
@@ -55,7 +55,7 @@ path = './'
 filename = 'RedIntervalLines.txt'
 with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
-       redLines = [int(float(line)) for line in lines]
+       redLines = [float(line) for line in lines]
 
 
 redLinesConv = [i*250/N for i in redLines]
