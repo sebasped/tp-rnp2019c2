@@ -6,6 +6,15 @@ Created on Thu Oct 31 22:18:28 2019
 @author: sebas
 """
 
+
+""" Primera versión final con todo:
+    levanta datos y los particiona en train test
+    Hace batch
+    Acc 84% lo mejor que se obtuvo
+    Arquitectura poco profunda
+"""
+
+
 import torch
 import torchvision as tv
 from matplotlib import pyplot as plt
@@ -64,26 +73,32 @@ if __name__ == '__main__':
            floats = [float(x) for x in line.split()]
            conPico.append(floats)
     
-    n=50
-    sinPico_trn = sinPico[0:n]
-    sinPico_tst = sinPico[n:2*n]
+    N = min( len(sinPico), len(conPico))
+    if len(sinPico) > N:
+        sinPico = sinPico[0:N]
+    if len(conPico) > N:
+        conPico = conPico[0:N]    
+    
+    
+    sinPico_trn = sinPico[:-N//4]
+    sinPico_tst = sinPico[-N//4:]
 
-    conPico_trn = conPico[0:n]
-    conPico_tst = conPico[n:2*n]
+    conPico_trn = conPico[:-N//4]
+    conPico_tst = conPico[-N//4:]
 
     series_trn = sinPico_trn + conPico_trn
     series_tst = sinPico_tst + conPico_tst
     
     data_trn = torch.tensor(series_trn).view(len(series_trn),1,1500)
-    labels_trn = torch.tensor([0]*n+[1]*n)#.view(11,1)
+    labels_trn = torch.tensor([0]*len(sinPico_trn)+[1]*len(conPico_trn))#.view(11,1)
     
     data_tst = torch.tensor(series_tst).view(len(series_tst),1,1500)
-    labels_tst = torch.tensor([0]*n+[1]*n)#.view(11,1)
+    labels_tst = torch.tensor([0]*len(sinPico_tst)+[1]*len(conPico_tst))#.view(11,1)
     
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=2
+    B=100
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -92,7 +107,7 @@ if __name__ == '__main__':
     optim = torch.optim.Adam(model.parameters())
     costf = torch.nn.CrossEntropyLoss()
     
-    T = 20
+    T = 30
     model.train()
     for t in range(T):
       E = 0
@@ -115,7 +130,7 @@ if __name__ == '__main__':
             total += len(labels)
 
     accuracy = right / total
-    print('Accuracy: ', accuracy)
+    print('Accuracy: ', round(accuracy,3))
     
     
     

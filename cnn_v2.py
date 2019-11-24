@@ -58,9 +58,9 @@ if __name__ == '__main__':
     data = torch.tensor(sinPico).view(11,1,1500) #o reshape
     print('Data size:', data.shape)
 
-    c1 = torch.nn.Conv1d(in_channels=1, out_channels=5, kernel_size=3, stride=1, padding=1)
-    y1 = c1(data)
-    print('y1 shape: ', y1.shape)
+#    c1 = torch.nn.Conv1d(in_channels=1, out_channels=5, kernel_size=3, stride=1, padding=1)
+#    y1 = c1(data)
+#    print('y1 shape: ', y1.shape)
 
 
 #    m = torch.nn.Conv1d(16, 33, 3, stride=2)
@@ -71,21 +71,46 @@ if __name__ == '__main__':
 #    c2 = torch.nn.Conv1d(5, 10, 3, 1, 0)
 #    y2 = c2(y1)
     
-    c2 = torch.nn.MaxPool1d(10)
-    y2 = c2(y1).relu()
-    print('y2 shape: ', y2.shape)
+#    c2 = torch.nn.MaxPool1d(10)
+#    y2 = c2(y1).relu()
+#    print('y2 shape: ', y2.shape)
     
-    L = torch.nn.Linear(5*150,2)
-    y3 = L(y2.view(-1,5*150)).softmax(dim=1)
-    print('y3 shape', y3.shape)
+#    L = torch.nn.Linear(5*150,2)
+#    y3 = L(y2.view(-1,5*150)).sigmoid()
+#    print('y3 shape', y3.shape)
 #    view(-1,32*8*8) #porque los Linears reciben vectores y no tensores
 #    Linear(32*8*8, 512)
 #    Linear(512, 10)    
     
-
     
-    model = CNN()
-    ymodel=model(data)
+    
+    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=2, padding=20)
+    y1 = conv1(data).relu()
+    print('y1 shape: ', y1.shape)
+
+    conv2 = torch.nn.Conv1d(5, 10, 30, 1, 10)
+    y2 = conv2(y1).relu()
+    print('y2 shape: ', y2.shape)
+
+
+    mpool1 = torch.nn.MaxPool1d(10)
+    y3 = mpool1(y2).relu()
+    print('y3 shape', y3.shape)
+    
+    H = 10*73
+    Linear1 = torch.nn.Linear(H, 100)
+    y4 = Linear1(y3.view(-1,H)).tanh()
+    print('y4 shape', y4.shape)
+    
+    Linear2 = torch.nn.Linear(100,2)
+    y5 = Linear2(y4)
+    print('y5 shape', y5.shape)
+    
+    
+    
+    
+#    model = CNN()
+#    ymodel=model(data)
 
 
     
