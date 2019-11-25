@@ -88,21 +88,21 @@ if __name__ == '__main__':
     y1 = conv1(data).relu()
     print('y1 shape: ', y1.shape)
 
-    conv2 = torch.nn.Conv1d(5, 10, 30, 1, 10)
+    conv2 = torch.nn.Conv1d(5, 10, 30, 2, 1)
     y2 = conv2(y1).relu()
     print('y2 shape: ', y2.shape)
 
 
-    mpool1 = torch.nn.MaxPool1d(10)
+    mpool1 = torch.nn.MaxPool1d(2)
     y3 = mpool1(y2).relu()
     print('y3 shape', y3.shape)
     
-    H = 10*73
-    Linear1 = torch.nn.Linear(H, 100)
+    H = 10*178
+    Linear1 = torch.nn.Linear(H, 400)
     y4 = Linear1(y3.view(-1,H)).tanh()
     print('y4 shape', y4.shape)
     
-    Linear2 = torch.nn.Linear(100,2)
+    Linear2 = torch.nn.Linear(400,2)
     y5 = Linear2(y4)
     print('y5 shape', y5.shape)
     

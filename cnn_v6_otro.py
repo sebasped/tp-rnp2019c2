@@ -27,21 +27,21 @@ class CNN(torch.nn.Module):
     def __init__(self, in_chann=1, out_classes=2): 
         super().__init__()
         self.conv1 = torch.nn.Conv1d(in_chann, out_channels=5, kernel_size=60, stride=2, padding=20)
-        self.conv2 = torch.nn.Conv1d(5, 10, 30, 1, 10)
-        self.mpool1 = torch.nn.MaxPool1d(4)
-        self.H = 10*183
-        self.Linear1 = torch.nn.Linear(self.H, 300)
-#        self.Linear2 = torch.nn.Linear(400,100)
-        self.Linear3 = torch.nn.Linear(300,out_classes)
+        self.conv2 = torch.nn.Conv1d(5, 10, 30, 2, 1)
+        self.mpool1 = torch.nn.MaxPool1d(2)
+        self.H = 10*178
+        self.Linear1 = torch.nn.Linear(self.H, 400)
+        self.Linear2 = torch.nn.Linear(400,100)
+        self.Linear3 = torch.nn.Linear(100,out_classes)
 
     def forward(self, x):
         y1 = self.conv1(x).relu()
-        y2 = self.conv2(y1).relu() #probas de poner el relu antes del pooling
-        y3 = self.mpool1(y2)
+        y2 = self.conv2(y1) #probas de poner el relu antes del pooling
+        y3 = self.mpool1(y2).relu()
         y4 = self.Linear1(y3.view(-1,self.H)).tanh()
 #        y4 = self.Linear1(y3.view(-1,self.H))
-        y5 = self.Linear3(y4)
-#        y6 = self.Linear3(y5)
+        y5 = self.Linear2(y4).tanh()
+        y6 = self.Linear3(y5)
 
 #        y1 = self.conv1(x).relu()
 #        y2 = self.c2(y1)
@@ -50,7 +50,7 @@ class CNN(torch.nn.Module):
 #        y5 = y4.softmax(dim=1)
 #        y5=y4
 
-        return y5
+        return y6
 
 
 
