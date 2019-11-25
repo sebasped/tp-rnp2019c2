@@ -156,11 +156,12 @@ if __name__ == '__main__':
     
         accuracy = right / total
         acc2.append(accuracy)
-        print('Accuracy: ', round(accuracy,2))
+        print('Accuracy: ', round(accuracy,3))
     
     end = time.time()
-    print("Tiempo ejecución: ", end - start)
+    print("Tiempo ejecución: ", end - start) 
 
+    print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
     plt.xlabel(u"Épocas")
     plt.ylabel("Accuracy en test")
     plt.plot( np.arange(paso,T_max+paso,paso), acc2)
