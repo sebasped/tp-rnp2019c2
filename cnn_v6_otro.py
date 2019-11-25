@@ -85,12 +85,13 @@ if __name__ == '__main__':
         conPico = conPico[0:N]    
     
     
+    n=5
     # 80/20 train/test
-    sinPico_trn = sinPico[:-N//5]
-    sinPico_tst = sinPico[-N//5:]
+    sinPico_trn = sinPico[:-N//n]
+    sinPico_tst = sinPico[-N//n:]
 
-    conPico_trn = conPico[:-N//5]
-    conPico_tst = conPico[-N//5:]
+    conPico_trn = conPico[:-N//n]
+    conPico_tst = conPico[-N//n:]
 
     series_trn = sinPico_trn + conPico_trn
     series_tst = sinPico_tst + conPico_tst
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=100
+    B=len(series_trn)
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -117,8 +118,8 @@ if __name__ == '__main__':
     
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     acc2=[]
-    T_max=40
-    paso=2
+    T_max=200
+    paso=10
     
     start = time.time()
 #    print("hello")
