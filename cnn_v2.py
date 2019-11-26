@@ -84,7 +84,7 @@ if __name__ == '__main__':
     
     
     
-    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=2, padding=20)
+    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=1, padding=20)
     y1 = conv1(data).relu()
     print('y1 shape: ', y1.shape)
 
@@ -97,14 +97,22 @@ if __name__ == '__main__':
     y3 = mpool1(y2).relu()
     print('y3 shape', y3.shape)
     
-    H = 10*178
+    conv3 = torch.nn.Conv1d(10, 20, 15, 2, 1)
+    y4 = conv3(y3).relu()
+    print('y4 shape: ', y4.shape)
+
+    mpool2 = torch.nn.MaxPool1d(2)
+    y5 = mpool2(y4).relu()
+    print('y5 shape', y5.shape)
+    
+    H = 20*88
     Linear1 = torch.nn.Linear(H, 400)
-    y4 = Linear1(y3.view(-1,H)).tanh()
-    print('y4 shape', y4.shape)
+    y6 = Linear1(y5.view(-1,H)).tanh()
+    print('y4 shape', y6.shape)
     
     Linear2 = torch.nn.Linear(400,2)
-    y5 = Linear2(y4)
-    print('y5 shape', y5.shape)
+    y7 = Linear2(y6)
+    print('y5 shape', y7.shape)
     
     
     
