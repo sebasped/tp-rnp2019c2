@@ -16,7 +16,7 @@ Created on Thu Oct 31 22:18:28 2019
 
 
 import torch
-import torchvision as tv
+#import torchvision as tv
 from matplotlib import pyplot as plt
 from torch.utils.data import TensorDataset, DataLoader
 import numpy as np
@@ -27,9 +27,9 @@ class CNN(torch.nn.Module):
     def __init__(self, in_chann=1, out_classes=2): 
         super().__init__()
         self.convLayers = torch.nn.Sequential(
-                torch.nn.Conv1d(in_chann, out_channels=5, kernel_size=60, stride=2, padding=20),
+                torch.nn.Conv1d(in_chann, out_channels=5, kernel_size=60, stride=2, padding=20, dilation=1),
                 torch.nn.ReLU(),
-                torch.nn.Conv1d(5, 10, 30, 2, 1),
+                torch.nn.Conv1d(5, 10, 30, 2, 1, dilation=1),
                 torch.nn.MaxPool1d(2),
                 torch.nn.ReLU()
                 )
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     
         accuracy = right / total
         acc2.append(accuracy)
-        print('Accuracy: ', round(accuracy,3))
+        print('Accuracy: ', round(accuracy,3), 'Épocas: ', T)
     
     end = time.time()
     print("Tiempo ejecución: ", end - start) 
@@ -161,7 +161,8 @@ if __name__ == '__main__':
     print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
     plt.xlabel(u"Épocas")
     plt.ylabel("Accuracy en test")
-    plt.title('Promedio: ', round(sum(acc2)/len(acc2),3))
+    plt.ylim(0.5,1)
+    plt.title('Promedio: %s -- Máximoa: %s' %( round(sum(acc2)/len(acc2),3), round(max(acc2),3)) ) 
     plt.plot( np.arange(paso,T_max+paso,paso), acc2)
     plt.show()
     
