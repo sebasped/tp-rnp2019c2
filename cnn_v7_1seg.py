@@ -23,23 +23,27 @@ import numpy as np
 import time
 import random
 
+
 class CNN(torch.nn.Module):
     def __init__(self, in_chann=1, out_classes=2): 
         super().__init__()
         self.convLayers = torch.nn.Sequential(
-                torch.nn.Conv1d(in_chann, out_channels=5, kernel_size=60, stride=2, padding=20, dilation=1),
+                torch.nn.Conv1d(in_chann, out_channels=5, kernel_size=60, stride=1, padding=30, dilation=1),
                 torch.nn.ReLU(),
-                torch.nn.Conv1d(5, 10, 30, 2, 1, dilation=1),
+                torch.nn.Conv1d(5, 10, 30, 2, 30, dilation=1),
+                torch.nn.MaxPool1d(2),
+                torch.nn.ReLU(),
+                torch.nn.Conv1d(10, 20, 15, 2, 30, dilation=1),
                 torch.nn.MaxPool1d(2),
                 torch.nn.ReLU()
                 )
-        self.H = 10*178
+        self.H = 20*29
         self.fcLayers = torch.nn.Sequential(
-                torch.nn.Linear(self.H, 400),
+                torch.nn.Linear(self.H, 300),
                 torch.nn.Tanh(),
-#                torch.nn.Linear(400,100),
-#                torch.nn.Tanh(),
-                torch.nn.Linear(400,out_classes)
+                torch.nn.Linear(300,100),
+                torch.nn.Tanh(),
+                torch.nn.Linear(100,out_classes)
                 )
 
     def forward(self, x):
@@ -50,13 +54,13 @@ class CNN(torch.nn.Module):
         return y3
 
 
+# Probar una lineal con clase única con activación sigmoidea y MSE
 
 if __name__ == '__main__':
-
     
     sinPico=[]
     path = './'
-    filename = 'sinPico.txt'
+    filename = 'sinPico1seg.txt'
     with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
     #       xtest = [int(float(line)) for line in lines]
@@ -66,7 +70,7 @@ if __name__ == '__main__':
     
     conPico=[]
     path = './'
-    filename = 'conPico.txt'
+    filename = 'conPico1seg.txt'
     with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
     #       xtest = [int(float(line)) for line in lines]
@@ -82,7 +86,7 @@ if __name__ == '__main__':
         conPico = conPico[0:N]    
     
     
-    n=5
+    n=4
     # 80/20 train/test
     sinPico_trn = sinPico[:-N//n]
     sinPico_tst = sinPico[-N//n:]
@@ -114,12 +118,13 @@ if __name__ == '__main__':
     data_tst = torch.tensor( series_tst).view(len(series_tst), 1, cant_mediciones_por_dato)
 #    labels_tst = torch.tensor( [0]*len(sinPico_tst)+[1]*len(conPico_tst))#.view(11,1)
     labels_tst = torch.tensor( lt_tst)
+
     
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=len(series_trn)
-#    B=100
+#    B=len(series_trn)
+    B=1000
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -155,7 +160,7 @@ if __name__ == '__main__':
             optim.step()
             E += error.item()
 #          print(t, E) 
-        print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)  
+        print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)          
           
         model.eval()
         right, total = 0, 0
@@ -169,16 +174,16 @@ if __name__ == '__main__':
     
         accuracy = right / total
         acc2.append(accuracy)
-        print('Accuracy: ', round(accuracy,3), 'Épocas: ', T)
+        print('Accuracy:', round(accuracy,3),'Épocas: ', T)
     
     end = time.time()
-    print("Tiempo ejecución: ", end - start) 
+    print("Tiempo ejecución en minutos: ", (end - start)/60 ) 
 
     print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
     plt.xlabel(u"Épocas")
     plt.ylabel("Accuracy en test")
     plt.ylim(0.5,1)
-    plt.title('Promedio: %s -- Máximoa: %s' %( round(sum(acc2)/len(acc2),3), round(max(acc2),3)) ) 
+    plt.title('Promedio: %s -- Máximo: %s' %( round(sum(acc2)/len(acc2),3), round(max(acc2),3)) ) 
     plt.plot( np.arange(paso,T_max+paso,paso), acc2)
     plt.show()
     

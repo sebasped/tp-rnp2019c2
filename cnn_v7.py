@@ -21,6 +21,7 @@ from matplotlib import pyplot as plt
 from torch.utils.data import TensorDataset, DataLoader
 import numpy as np
 import time
+import random
 
 
 class CNN(torch.nn.Module):
@@ -53,9 +54,9 @@ class CNN(torch.nn.Module):
         return y3
 
 
+# Probar una lineal con clase única con activación sigmoidea y MSE
 
 if __name__ == '__main__':
-
     
     sinPico=[]
     path = './'
@@ -95,18 +96,35 @@ if __name__ == '__main__':
 
     series_trn = sinPico_trn + conPico_trn
     series_tst = sinPico_tst + conPico_tst
+    lt_trn = [0]*len(sinPico_trn)+[1]*len(conPico_trn)
+    lt_tst = [0]*len(sinPico_tst)+[1]*len(conPico_tst)
+    
+    
+    #por las dudas, mezclo los datos antes    
+    entero_trn = list(zip(series_trn,lt_trn))
+    random.shuffle(entero_trn)
+    series_trn, lt_trn = zip(*entero_trn)
+
+    entero_tst = list(zip(series_tst,lt_tst))
+    random.shuffle(entero_tst)
+    series_tst, lt_tst = zip(*entero_tst)
+    
     
     cant_mediciones_por_dato = len( sinPico[0])
     data_trn = torch.tensor( series_trn).view(len(series_trn), 1, cant_mediciones_por_dato)
-    labels_trn = torch.tensor( [0]*len(sinPico_trn)+[1]*len(conPico_trn))#.view(11,1)
+#    labels_trn = torch.tensor( [0]*len(sinPico_trn)+[1]*len(conPico_trn))#.view(11,1)
+    labels_trn = torch.tensor( lt_trn)
     
     data_tst = torch.tensor( series_tst).view(len(series_tst), 1, cant_mediciones_por_dato)
-    labels_tst = torch.tensor( [0]*len(sinPico_tst)+[1]*len(conPico_tst))#.view(11,1)
+#    labels_tst = torch.tensor( [0]*len(sinPico_tst)+[1]*len(conPico_tst))#.view(11,1)
+    labels_tst = torch.tensor( lt_tst)
+
     
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=len(series_trn)
+#    B=len(series_trn)
+    B=500
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -142,7 +160,7 @@ if __name__ == '__main__':
             optim.step()
             E += error.item()
 #          print(t, E) 
-          
+        print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)  
           
         model.eval()
         right, total = 0, 0

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     
     sinPico=[]
     path = './'
-    filename = 'sinPico.txt'
+    filename = 'sinPico1seg.txt'
     with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
     #       xtest = [int(float(line)) for line in lines]
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     
     sinPico = sinPico[0:11]
 
-    data = torch.tensor(sinPico).view(11,1,1500) #o reshape
+    data = torch.tensor(sinPico).view(11,1,250) #o reshape
     print('Data size:', data.shape)
 
 #    c1 = torch.nn.Conv1d(in_channels=1, out_channels=5, kernel_size=3, stride=1, padding=1)
@@ -84,35 +84,42 @@ if __name__ == '__main__':
     
     
     
-    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=1, padding=20)
+    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=1, padding=30)
     y1 = conv1(data).relu()
+#    print(conv1)
     print('y1 shape: ', y1.shape)
 
-    conv2 = torch.nn.Conv1d(5, 10, 30, 2, 1)
+    conv2 = torch.nn.Conv1d(5, 10, 30, 2, 30)
+#    print(conv2)
     y2 = conv2(y1).relu()
     print('y2 shape: ', y2.shape)
 
 
     mpool1 = torch.nn.MaxPool1d(2)
+#    print(mpool1)
     y3 = mpool1(y2).relu()
-    print('y3 shape', y3.shape)
+    print('y3 shape: ', y3.shape)
     
-    conv3 = torch.nn.Conv1d(10, 20, 15, 2, 1)
+    conv3 = torch.nn.Conv1d(10, 20, 15, 2, 30)
+#    print(conv3)
     y4 = conv3(y3).relu()
     print('y4 shape: ', y4.shape)
 
     mpool2 = torch.nn.MaxPool1d(2)
+#    print(mpool2)
     y5 = mpool2(y4).relu()
-    print('y5 shape', y5.shape)
+    print('y5 shape: ', y5.shape)
     
-    H = 20*88
-    Linear1 = torch.nn.Linear(H, 400)
+    H = 20*29
+    Linear1 = torch.nn.Linear(H, 200)
+#    print(Linear1)
     y6 = Linear1(y5.view(-1,H)).tanh()
-    print('y4 shape', y6.shape)
+    print('y6 shape: ', y6.shape)
     
-    Linear2 = torch.nn.Linear(400,2)
+    Linear2 = torch.nn.Linear(200,2)
+#    print(Linear2)
     y7 = Linear2(y6)
-    print('y5 shape', y7.shape)
+    print('y7 shape: ', y7.shape)
     
     
     
