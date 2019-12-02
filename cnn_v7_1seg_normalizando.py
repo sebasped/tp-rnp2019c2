@@ -110,13 +110,17 @@ if __name__ == '__main__':
     series_tst, lt_tst = zip(*entero_tst)
     
     
+    # normalizo los datos de las series temporales
+    normalizar = tv.transforms.Compose( [tv.transforms.Normalize(mean=[0.5], std=[0.5])] )
     
     cant_mediciones_por_dato = len( sinPico[0])
-    data_trn = torch.tensor( series_trn).view(len(series_trn), 1, cant_mediciones_por_dato)
+    data_trn_sinNorm = torch.tensor( series_trn).view(len(series_trn), 1, cant_mediciones_por_dato)
+    data_trn = normalizar(data_trn_sinNorm)
 #    labels_trn = torch.tensor( [0]*len(sinPico_trn)+[1]*len(conPico_trn))#.view(11,1)
     labels_trn = torch.tensor( lt_trn)
     
-    data_tst = torch.tensor( series_tst).view(len(series_tst), 1, cant_mediciones_por_dato)
+    data_tst_sinNorm = torch.tensor( series_tst).view(len(series_tst), 1, cant_mediciones_por_dato)
+    data_tst = normalizar(data_tst_sinNorm)
 #    labels_tst = torch.tensor( [0]*len(sinPico_tst)+[1]*len(conPico_tst))#.view(11,1)
     labels_tst = torch.tensor( lt_tst)
 
