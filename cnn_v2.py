@@ -55,9 +55,11 @@ if __name__ == '__main__':
     
     sinPico = sinPico[0:11]
 
-    data = torch.tensor(sinPico).view(11,1,250) #o reshape
-    print('Data size:', data.shape)
+    data = torch.tensor(sinPico)#.view(11,1,250) #o reshape
+#    print('Data size:', data.shape)
 
+    datafft = torch.rfft(data,1,onesided=True).view(11,2,126)
+    print('Data size:', datafft.shape)
 #    inv_normalize = tv.transforms.Compose(
 #    [
 #        tv.transforms.Normalize(mean=[0.5], std=[0.5])
@@ -92,12 +94,12 @@ if __name__ == '__main__':
     
     
     
-    conv1 = torch.nn.Conv1d(1, out_channels=5, kernel_size=60, stride=1, padding=30)
-    y1 = conv1(data).relu()
+    conv1 = torch.nn.Conv1d(2, out_channels=10, kernel_size=60, stride=1, padding=30)
+    y1 = conv1(datafft).relu()
 #    print(conv1)
     print('y1 shape: ', y1.shape)
 
-    conv2 = torch.nn.Conv1d(5, 10, 30, 2, 30)
+    conv2 = torch.nn.Conv1d(10, 20, 30, 2, 30)
 #    print(conv2)
     y2 = conv2(y1).relu()
     print('y2 shape: ', y2.shape)
@@ -108,7 +110,7 @@ if __name__ == '__main__':
     y3 = mpool1(y2).relu()
     print('y3 shape: ', y3.shape)
     
-    conv3 = torch.nn.Conv1d(10, 20, 15, 2, 30)
+    conv3 = torch.nn.Conv1d(20, 40, 15, 2, 30)
 #    print(conv3)
     y4 = conv3(y3).relu()
     print('y4 shape: ', y4.shape)
@@ -118,7 +120,7 @@ if __name__ == '__main__':
     y5 = mpool2(y4).relu()
     print('y5 shape: ', y5.shape)
     
-    H = 20*29
+    H = 40*21
     Linear1 = torch.nn.Linear(H, 200)
 #    print(Linear1)
     y6 = Linear1(y5.view(-1,H)).tanh()
