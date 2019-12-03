@@ -118,8 +118,8 @@ if __name__ == '__main__':
     trn_data = TensorDataset( data_trn, labels_trn)
     tst_data = TensorDataset( data_tst, labels_tst)
     
-    B=len(series_trn)
-#    B=100
+#    B=len(series_trn)
+    B=500
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -150,9 +150,14 @@ if __name__ == '__main__':
             label = label.to( device)
             optim.zero_grad()
             y = model(data)
+            
+#            start = time.time()
             error = costf(y, label)
             error.backward()
             optim.step()
+#            end = time.time()
+#            print("Tiempo ejecución: ", end - start) 
+            
             E += error.item()
 #          print(t, E) 
         print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)  
@@ -172,7 +177,7 @@ if __name__ == '__main__':
         print('Accuracy: ', round(accuracy,3), 'Épocas: ', T)
     
     end = time.time()
-    print("Tiempo ejecución: ", end - start) 
+    print("Tiempo ejecución: ", round((end - start)/60,2)) 
 
     print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
     plt.xlabel(u"Épocas")

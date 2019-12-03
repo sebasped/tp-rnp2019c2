@@ -7,13 +7,6 @@ Created on Thu Oct 31 22:18:28 2019
 """
 
 
-""" Primera versión final con todo:
-    levanta datos y los particiona en train test
-    Hace batch
-    Acc 83-5% lo mejor que se obtuvo
-    Arquitectura poco profunda
-"""
-
 
 import torch
 import torchvision as tv
@@ -111,7 +104,10 @@ if __name__ == '__main__':
     
     
     # normalizo los datos de las series temporales
-    normalizar = tv.transforms.Compose( [tv.transforms.Normalize(mean=[0.5], std=[0.5])] )
+    flattened_list = [y for x in series_trn+series_tst for y in x]
+    media = np.mean(flattened_list)
+    desvio = np.std(flattened_list)
+    normalizar = tv.transforms.Compose( [tv.transforms.Normalize(mean=[media], std=[desvio])] )
     
     cant_mediciones_por_dato = len( sinPico[0])
     data_trn_sinNorm = torch.tensor( series_trn).view(len(series_trn), 1, cant_mediciones_por_dato)
@@ -129,7 +125,7 @@ if __name__ == '__main__':
     tst_data = TensorDataset( data_tst, labels_tst)
     
 #    B=len(series_trn)
-    B=1000
+    B=500
     trn_load = DataLoader( trn_data, shuffle=True, batch_size=B)
     tst_load = DataLoader( tst_data, shuffle=True, batch_size=B)
 
@@ -141,15 +137,16 @@ if __name__ == '__main__':
     
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     acc2=[]
-    T_max=200
+    T_max=100
     paso=10
     
     start = time.time()
-#    print("hello")
-    for T in np.arange(paso,T_max+paso,paso):
+
+    epocas = np.arange(paso,T_max+paso,paso)
+    for T in epocas:
 #    T = 50
         model = CNN().to( device)
-        optim = torch.optim.Adam(model.parameters())
+        optim = torch.optim.Adam( model.parameters())
         costf = torch.nn.CrossEntropyLoss()
 
         model.train()
@@ -160,7 +157,7 @@ if __name__ == '__main__':
             label = label.to( device)
             optim.zero_grad()
             y = model(data)
-            error = costf(y, label)
+            error = costf( y, label)
             error.backward()
             optim.step()
             E += error.item()
@@ -173,23 +170,23 @@ if __name__ == '__main__':
             for data, labels in tst_load:
                 data = data.to( device)
                 labels = labels.to( device)
-                y = model(data)
-                right += (y.argmax(dim=1)==labels).sum().item()
-                total += len(labels)
+                y = model( data)
+                right += ( y.argmax(dim=1)==labels).sum().item()
+                total += len( labels)
     
         accuracy = right / total
         acc2.append(accuracy)
         print('Accuracy:', round(accuracy,3),'Épocas: ', T)
     
     end = time.time()
-    print("Tiempo ejecución en minutos: ", (end - start)/60 ) 
+    print("Tiempo ejecución en minutos: ", round((end - start)/60,2) ) 
 
     print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
     plt.xlabel(u"Épocas")
     plt.ylabel("Accuracy en test")
-    plt.ylim(0.5,1)
+    plt.ylim(0.8,1)
     plt.title('Promedio: %s -- Máximo: %s' %( round(sum(acc2)/len(acc2),3), round(max(acc2),3)) ) 
-    plt.plot( np.arange(paso,T_max+paso,paso), acc2)
+    plt.plot( epocas, acc2)
     plt.show()
     
     

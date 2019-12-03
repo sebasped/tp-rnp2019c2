@@ -58,13 +58,13 @@ if __name__ == '__main__':
     data = torch.tensor(sinPico).view(11,1,250) #o reshape
     print('Data size:', data.shape)
 
-    inv_normalize = tv.transforms.Compose(
-    [
-        tv.transforms.Normalize(mean=[0.5], std=[0.5])
-    ]
-    )
+#    inv_normalize = tv.transforms.Compose(
+#    [
+#        tv.transforms.Normalize(mean=[0.5], std=[0.5])
+#    ]
+#    )
     
-    data_norm = inv_normalize(data)
+#    data_norm = inv_normalize(data)
     
 #    c1 = torch.nn.Conv1d(in_channels=1, out_channels=5, kernel_size=3, stride=1, padding=1)
 #    y1 = c1(data)
