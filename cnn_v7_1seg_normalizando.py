@@ -136,7 +136,7 @@ if __name__ == '__main__':
 #    costf = torch.nn.MSELoss()
     
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    acc2=[]
+    acc=[]
     T_max=100
     paso=10
     
@@ -155,15 +155,18 @@ if __name__ == '__main__':
           for data, label in trn_load:
             data = data.to( device)
             label = label.to( device)
-            optim.zero_grad()
+
             y = model(data)
+
             error = costf( y, label)
             error.backward()
             optim.step()
+            optim.zero_grad()
+
             E += error.item()
 #          print(t, E) 
-        print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)          
-          
+        print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)
+
         model.eval()
         right, total = 0, 0
         with torch.no_grad():
@@ -175,18 +178,18 @@ if __name__ == '__main__':
                 total += len( labels)
     
         accuracy = right / total
-        acc2.append(accuracy)
+        acc.append(accuracy)
         print('Accuracy:', round(accuracy,3),'Épocas: ', T)
     
     end = time.time()
     print("Tiempo ejecución en minutos: ", round((end - start)/60,2) ) 
 
-    print('Accuracy promedio', round(sum(acc2)/len(acc2),3) )
+    print('Accuracy promedio', round(sum(acc)/len(acc),3) )
     plt.xlabel(u"Épocas")
     plt.ylabel("Accuracy en test")
     plt.ylim(0.8,1)
-    plt.title('Promedio: %s -- Máximo: %s' %( round(sum(acc2)/len(acc2),3), round(max(acc2),3)) ) 
-    plt.plot( epocas, acc2)
+    plt.title('Promedio: %s -- Máximo: %s' %( round(sum(acc)/len(acc),3), round(max(acc),3)) ) 
+    plt.plot( epocas, acc)
     plt.show()
     
     

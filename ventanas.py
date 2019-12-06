@@ -14,8 +14,14 @@ path = './'
 filename = 'BEADSSignal.txt'
 with open(path+filename, 'r') as f:
        lines = (line.strip() for line in f if line)
-       xorig = [float(line) for line in lines]
+       xorigBeads = [float(line) for line in lines]
 
+path = './'
+filename = '0.1BzATP12.txt'
+#filename = 'OriginalSignalSinT.txt'
+with open(path+filename, 'r') as f:
+       lines = (line.strip() for line in f if line)
+       xorig = [float(line) for line in lines]
 
 
 x=[]
@@ -29,6 +35,17 @@ with open(path+filename, 'r') as f:
        for line in lines:
            floats = [float(x) for x in line.split()]
            x.append(floats)
+
+
+plt.clf()
+plt.plot(xorig[:30000], label=u'Señal original')
+#plt.plot(xorigBeads[:30000], label=u'Señal corregida')
+plt.legend()
+plt.xlabel('Mediciones a 250 Hz')
+plt.ylabel('Intensidad señal')
+
+plt.show()
+
 
 
 

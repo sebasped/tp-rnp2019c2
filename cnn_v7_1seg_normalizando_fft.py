@@ -157,11 +157,13 @@ if __name__ == '__main__':
           for data, label in trn_load:
             data = data.to( device)
             label = label.to( device)
-            optim.zero_grad()
             y = model(data)
+            
             error = costf( y, label)
             error.backward()
             optim.step()
+            optim.zero_grad()
+            
             E += error.item()
 #          print(t, E) 
         print('Error entrenamiento: ', round(E,4), 'Épocas: ', T)          
